@@ -4,7 +4,7 @@ pragma solidity ^0.6.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
-import "./ICollectible.sol";
+import "./interfaces/ICollectible.sol";
 
 contract NftFactory is Ownable {
   using Address for address;
