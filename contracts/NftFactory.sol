@@ -18,7 +18,7 @@ contract NftFactory is Ownable {
     tokenURI = _tokenURI;
   }
 
-  function claimNft(address to) public onlyOwner returns (uint256 tokenId) {
+  function claimNft(address to) public returns (uint256 tokenId) {
     require(claimedAccounts[to] == false, "NftFactory: account already claimed");
     claimedAccounts[to] = true;
     tokenId = nftToken.mintItem(to, this.tokenURI());
