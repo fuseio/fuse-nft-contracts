@@ -2,10 +2,11 @@ const { expect } = require('chai')
 const { ethers } = require('hardhat')
 
 describe('NftRegistry', () => {
-    let registry
-    let mockNft
+    let registry, mockNft, addr1
     
     beforeEach(async () => {
+        [, addr1 ] = await ethers.getSigners()
+
         // deploy registry
         const Registry = await ethers.getContractFactory('NftRegistry')
         registry = await Registry.deploy()
@@ -35,8 +36,19 @@ describe('NftRegistry', () => {
 
         it('should fail if address is zero', async () => {
             await expect(registry.addToken(ethers.constants.AddressZero))
-                .to
-                .revertedWith('NftRegistry: Provide non zero address')
+                .to.revertedWith('NftRegistry: Provide non zero address')
+        })
+
+        it('should fail if token is already registered', async () => {
+            await registry.addToken(mockNft.address)
+
+            await expect(registry.addToken(mockNft.address))
+                .to.revertedWith('NftRegistry: Token is already registered')
+        })
+
+        it('should fail if not called by owner', async () => {
+            await expect(registry.connect(addr1).removeToken(mockNft.address))
+                .to.be.revertedWith('Ownable: caller is not the owner')
         })
     })
     
@@ -57,6 +69,16 @@ describe('NftRegistry', () => {
             await expect(registry.removeToken(mockNft.address))
                 .to.emit(registry, 'TokenRemoved')
                 .withArgs(mockNft.address)
+        })
+
+        it('should fail if token is not registered', async () => {
+            await expect(registry.removeToken(mockNft.address))
+                .to.be.revertedWith('NftRegistry: Token is not registered')
+        })
+
+        it('should fail if not called by owner', async () => {
+            await expect(registry.connect(addr1).removeToken(mockNft.address))
+                .to.be.revertedWith('Ownable: caller is not the owner')
         })
     })
 

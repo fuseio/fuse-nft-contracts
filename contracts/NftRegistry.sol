@@ -21,12 +21,13 @@ contract NftRegistry is Ownable, INftRegistry {
     /**
      * @dev Add token to registry.
      * 
-     * Emits a {TokenAdded} event.
-     * 
      * @param token address of token to add to registry. 
+     * 
+     * Emits a {TokenAdded} event.
      */
-    function addToken(address token) public override {
+    function addToken(address token) onlyOwner public override {
         require(token != address(0), "NftRegistry: Provide non zero address");
+        require(registeredTokens[token] != true, "NftRegistry: Token is already registered");
         registeredTokens[token] = true;
         emit TokenAdded(token);
     }
@@ -34,11 +35,12 @@ contract NftRegistry is Ownable, INftRegistry {
     /**
      * @dev Remove token from registry.
      * 
-     * Emits a {TokenRemoved} event.
-     * 
      * @param token address of token to remove from registry. 
+     * 
+     * Emits a {TokenRemoved} event.
      */
-    function removeToken(address token) public override {
+    function removeToken(address token) onlyOwner public override {
+        require(registeredTokens[token] != false, "NftRegistry: Token is not registered");
         registeredTokens[token] = false;
         emit TokenRemoved(token);
     }
