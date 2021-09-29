@@ -8,6 +8,10 @@
     "ethers": "^5.4.6",
     "hardhat": "^2.6.4"
   },
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test"
+  },
   "dependencies": {
     "@openzeppelin/contracts": "^3.2.0"
   }
